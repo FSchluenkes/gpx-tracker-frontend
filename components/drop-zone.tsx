@@ -224,7 +224,7 @@ const Row = forwardRef<HTMLTableRowElement, RowProps>(
           process.env.NEXT_PUBLIC_DISABLE_UPLOAD === "true",
       }
     );
-    console.log(process.env.NEXT_PUPLIC_API_UPLOAD);
+
     useEffect(() => {
       if (data?.message) {
         toast(data.message);

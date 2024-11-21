@@ -11,10 +11,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { TableContent } from "./track-table/table-content";
 
-// interface TrackTableProps extends React.HTMLAttributes<HTMLTableElement> {
-//   tracks: Track[];
-// }
-
 const TrackTable = ({ className, ...props }: React.HTMLAttributes<HTMLTableElement>) => {
   const { theme } = useTheme();
   const { status, data } = useQuery({
@@ -22,7 +18,6 @@ const TrackTable = ({ className, ...props }: React.HTMLAttributes<HTMLTableEleme
     refetchInterval: 10 * 1_000,
     queryFn: async (): Promise<Track[]> => {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_TRACK}`);
-      console.log("fetch");
 
       const data = response.data as Track[];
 
@@ -34,7 +29,6 @@ const TrackTable = ({ className, ...props }: React.HTMLAttributes<HTMLTableEleme
       });
     },
   });
-
   const ref = useRef<HTMLTableElement>(null);
   const { selectedTrack, setSelectedTrack } = useRowSelect(data || [], ref);
 

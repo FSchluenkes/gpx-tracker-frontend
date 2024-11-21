@@ -1,5 +1,6 @@
-import TableCard from "@/components/table-card";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { MapCard } from "@/components/map-card";
+import { StatsCard } from "@/components/stats-card";
+import { TableCard } from "@/components/table-card";
 
 export default function Dashboard() {
   return (
@@ -7,22 +8,10 @@ export default function Dashboard() {
       <div className="grid grid-rows-[1fr, 1fr] gap-4 overflow-hidden">
         <TableCard />
 
-        <div className="overflow-auto">
-          <div className="flex h-full w-full">
-            <Card className="flex h-full w-full">
-              <CardHeader>
-                <CardTitle>left bottom</CardTitle>
-              </CardHeader>
-            </Card>
-          </div>
-        </div>
+        <StatsCard />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>right</CardTitle>
-        </CardHeader>
-      </Card>
+      <MapCard />
     </div>
   );
 }

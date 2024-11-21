@@ -1,13 +1,14 @@
-"use Client";
+"use client";
 
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useEffect } from "react";
 import { Track } from "@/lib/types";
+import { useSlectedTrackStore } from "../stores/selected-track";
 
 export function useRowSelect(
   tracks: Track[],
   ref: RefObject<HTMLTableElement>
 ) {
-  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
+  const { selectedTrack, setSelectedTrack } = useSlectedTrackStore();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -46,8 +47,7 @@ export function useRowSelect(
     if (table) table.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      if (table)
-        table.removeEventListener("keydown", handleKeyDown);
+      if (table) table.removeEventListener("keydown", handleKeyDown);
     };
   }, [tracks, setSelectedTrack, selectedTrack, ref]);
 

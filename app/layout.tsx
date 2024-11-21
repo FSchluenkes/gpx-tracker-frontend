@@ -5,6 +5,7 @@ import { Provider } from "@/components/provider";
 import { Header } from "@/components/header";
 import { Toaster } from "@/components/ui/sonner";
 import "overlayscrollbars/overlayscrollbars.css";
+import "leaflet/dist/leaflet.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

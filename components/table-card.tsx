@@ -17,7 +17,7 @@ const TABS = {
   upload: 1,
 };
 
-export default function TableCard() {
+const TableCard = () => {
   const isDragging = useGlobalDragState();
 
   const [api, setApi] = useState<CarouselApi>();
@@ -63,7 +63,7 @@ export default function TableCard() {
           </TabsTrigger>
         </TabsList>
         <Carousel
-          className="w-full h-full overflow-auto"
+          className="w-full h-full overflow-auto rounded-lg"
           setApi={setApi}
           disableKeyControls
         >
@@ -79,4 +79,8 @@ export default function TableCard() {
       </Tabs>
     </div>
   );
-}
+};
+
+TableCard.displayName = "TableCard";
+
+export { TableCard };

@@ -5,3 +5,11 @@ export interface Track {
     startTime: Date;
     endTime: Date;
 }
+
+export interface Point {
+  id: number;
+  lat: number;
+  lon: number;
+  alt: number;
+  timestamp: Date;
+}
