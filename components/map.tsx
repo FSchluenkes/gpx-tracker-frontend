@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Point } from "@/lib/types";
 import { useTheme } from "next-themes";
-import { Circle, Marker, Popup, useMap } from "react-leaflet";
+import { Marker, Popup, useMap } from "react-leaflet";
 import { useSlectedTrackStore } from "@/app/stores/selected-track";
-import { DivIcon, Icon, LatLngBounds, LatLngTuple, point } from "leaflet";
+import { DivIcon, LatLngBounds, LatLngTuple } from "leaflet";
 import { useEffect } from "react";
 import { MapContainer, Polyline, TileLayer } from "react-leaflet";
 
