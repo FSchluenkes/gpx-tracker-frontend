@@ -9,7 +9,7 @@ const TableHeader = ({ children, className, ...props }: TableHeaderProps) => {
     <th
       scope="col"
       className={cn(
-        "px-4 py-2 text-left text-sm font-medium text-foreground dark:text-foreground tracking-wider",
+        "px-4 py-2 text-left text-sm font-medium text-forgound dark:text-foreground tracking-wider bg-muted dark:bg-muted first:rounded-l-lg last:rounded-r-lg",
         className
       )}
       {...props}

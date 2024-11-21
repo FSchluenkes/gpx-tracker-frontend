@@ -47,21 +47,21 @@ const TrackTable = ({ className, ...props }: React.HTMLAttributes<HTMLTableEleme
       >
         <table
           className={cn(
-            "table-fixed min-w-full h-full divide-y bg-background dark:bg-background",
+            "outline-none min-w-full h-full bg-background dark:bg-background",
             className
           )}
           ref={ref}
           {...props}
           tabIndex={-1}
         >
-          <thead className="bg-muted dark:bg-muted sticky top-0 z-10 opacity-100">
+          <thead className="sticky top-0 z-10 opacity-100">
             <tr>
               <TableHeader>Date</TableHeader>
               <TableHeader>Driver</TableHeader>
               <TableHeader>Vehicle</TableHeader>
             </tr>
           </thead>
-          <tbody className="relative divide-y border-muted dark:border-muted">
+          <tbody className="relative border-muted dark:border-muted">
             <TableContent
               status={status}
               data={data || []}

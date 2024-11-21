@@ -22,23 +22,21 @@ const TableRow = ({
   }, [selected]);
   return (
     <tr
-      className={cn("bg-background dark:bg-background", className, {
-        "bg-muted dark:bg-muted": selected,
-      })}
+      className={cn("bg-background dark:bg-background group", className)}
       ref={ref}
       {...props}
     >
-      <TableData className={selected ? "text-primary dark:text-primary" : ""}>
+      <TableData className={selected ? "bg-primary dark:bg-primary" : ""}>
         {track.startTime.toLocaleDateString("de-DE", {
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
         })}
       </TableData>
-      <TableData className={selected ? "text-primary dark:text-primary" : ""}>
+      <TableData className={selected ? "bg-primary dark:bg-primary" : ""}>
         {track.driver}
       </TableData>
-      <TableData className={selected ? "text-primary dark:text-primary" : ""}>
+      <TableData className={selected ? "bg-primary dark:bg-primary" : ""}>
         {track.licensePlate}
       </TableData>
     </tr>

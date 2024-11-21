@@ -86,9 +86,20 @@ const Map = () => {
       <TileLayer
         url={
           theme === "light"
+            ? "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png"
+            : "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png"
+        }
+        className="low-res-layer z-0"
+      />
+      <TileLayer
+        url={
+          theme === "light"
             ? "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
             : "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
         }
+        className="high-res-layer z-10"
+        updateWhenIdle={true}
+        updateWhenZooming={false}
       />
       {positions && positions.length > 0 && (
         <>

@@ -20,7 +20,6 @@ const TableContent = ({
       <TableRow
         key={track.id}
         track={track}
-        className="hover:bg-muted hover:dark:bg-muted"
         onClick={() => setSelectedTrack(track)}
         selected={selectedTrack?.id === track.id}
       />

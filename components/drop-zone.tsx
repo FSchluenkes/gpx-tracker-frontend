@@ -13,6 +13,7 @@ import { useUploadFile } from "@/app/hooks/use-file-upload";
 import { toast } from "sonner";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import { useTheme } from "next-themes";
+import { TableHeader } from "./track-table/table-header";
 
 // eslint-disable-next-line
 export interface InputProps
@@ -76,24 +77,24 @@ const DropZone = forwardRef<HTMLInputElement, InputProps>(
       <form
         onSubmit={(e) => e.preventDefault()}
         onDragEnter={handleDrag}
-        className="flex h-full items-center w-full justify-start bg-background dark:bg-background"
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        className="flex h-full items-center w-full justify-start bg-background dark:bg-background overflow-hidden"
       >
         <label
           htmlFor="dropzone-file"
           className={cn(
-            "relative h-full flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg transition",
-            { "dark:bg-muted": dragActive }
+            "relative h-full flex flex-col items-center justify-center w-full border border-solid rounded-lg",
+            {
+              "dark:bg-muted": dragActive,
+              "border-2 border-dashed": noInput,
+            }
           )}
           onDrop={handleDrop}
         >
           {noInput ? (
             <>
-              <div
-                className="absolute inset-0 cursor-pointer"
-                onDragEnter={handleDrag}
-                onDragLeave={handleDrag}
-                onDragOver={handleDrag}
-              />
+              <div className="absolute inset-0 cursor-pointer" />
               <div className="h-full flex flex-col items-center justify-center w-full p-4 gap-4">
                 <p className="text-xl">Drop Files here</p>
                 <CloudUpload size={64} />
@@ -124,50 +125,25 @@ const DropZone = forwardRef<HTMLInputElement, InputProps>(
                   }}
                   defer
                 >
-                  <div
-                    className={cn(
-                      "flex flex-col w-full h-full",
-                      "align-middle inline-block min-w-full ",
-                      "shadow sm:rounded-lg"
-                    )}
-                  >
-                    <table className="table-fixed min-w-full divide-y bg-background dark:bg-background">
-                      <thead className="bg-muted dark:bg-muted sticky top-0 z-10 opacity-100">
-                        <tr>
-                          <th
-                            scope="col"
-                            className="px-4 py-2 text-left text-sm font-medium text-foreground dark:text-foreground tracking-wider"
-                          >
-                            Name
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-4 py-2 text-left text-sm font-medium text-foreground dark:text-foreground tracking-wider"
-                          >
-                            Size
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-4 py-2 text-left text-sm font-medium text-foreground dark:text-foreground tracking-wider"
-                          >
-                            Status
-                          </th>
+                  <div className={cn("flex flex-col w-full h-full")}>
+                    <table className="min-w-full">
+                      <thead className="sticky top-0 z-10 opacity-100">
+                        <tr className="">
+                          <TableHeader>Name</TableHeader>
+                          <TableHeader>Size</TableHeader>
+                          <TableHeader>Status</TableHeader>
                         </tr>
                       </thead>
-                      <tbody className="relative divide-y border-muted dark:border-muted">
+                      <tbody className="relative">
                         {fileList.map((file, index) => (
-                          <Row
-                            file={file}
-                            key={index}
-                            className="hover:bg-muted hover:dark:bg-muted"
-                          />
+                          <Row file={file} key={index} className="" />
                         ))}
                       </tbody>
                     </table>
 
                     <label
-                      htmlFor="dropzone-file-images-present"
-                      className="relative cursor-pointer group hover:bg-muted dark:hover:bg-muted transition flex justify-center py-2 border-t border-border rounded-b-lg"
+                      htmlFor="dropzone-file"
+                      className="relative cursor-pointer group hover:bg-muted dark:hover:bg-muted transition flex justify-center py-2 rounded-lg"
                     >
                       <Plus size={24} />
                       <input
@@ -177,16 +153,10 @@ const DropZone = forwardRef<HTMLInputElement, InputProps>(
                         onChange={handleChange}
                         accept=".gpx"
                         type="file"
-                        id="dropzone-file-images-present"
+                        id="dropzone-file"
                         className="relative z-20 hidden"
                       />
-                      <div
-                        className="absolute inset-0"
-                        onDragEnter={handleDrag}
-                        onDragLeave={handleDrag}
-                        onDragOver={handleDrag}
-                        //   onDrop={handleDrop}
-                      />
+                      <div className="absolute inset-0" />
                     </label>
                   </div>
                 </OverlayScrollbarsComponent>
@@ -210,17 +180,12 @@ interface FileResponseData {
 
 const Row = forwardRef<HTMLTableRowElement, RowProps>(
   ({ file, className, ...props }, ref) => {
-    const {
-      data,
-      progress,
-      //   isLoading,
-      error,
-    } = useUploadFile<FileResponseData>(
+    const { data, progress, error } = useUploadFile<FileResponseData>(
       process.env.NEXT_PUBLIC_API_UPLOAD,
       file,
       {
         disabled:
-          process.env.NODE_ENV &&
+          process.env.NODE_ENV === "development" &&
           process.env.NEXT_PUBLIC_DISABLE_UPLOAD === "true",
       }
     );
@@ -232,21 +197,19 @@ const Row = forwardRef<HTMLTableRowElement, RowProps>(
     }, [data]);
 
     return (
-      <tr ref={ref} {...props} className={cn("", className)}>
-        <td className="px-4 py-2 truncate whitespace-normal text-sm font-medium text-foreground dark:text-foreground">
-          <div className="">
-            <p
-              className={cn("text-foreground dark:text-foreground", {
-                "text-red-500 dark:text-red-500": error,
-              })}
-            >
-              {file.name}
-            </p>
-          </div>
+      <tr ref={ref} {...props} className={cn("group", className)}>
+        <td className="px-4 py-2 truncate whitespace-normal text-sm font-medium text-foreground dark:text-foreground group-hover:hover:bg-muted group-hover:dark:bg-muted first:rounded-l-lg last:rounded-r-lg">
+          <p
+            className={cn("text-foreground dark:text-foreground", {
+              "text-red-500 dark:text-red-500": error,
+            })}
+          >
+            {file.name}
+          </p>
         </td>
         <td
           className={cn(
-            "px-4 py-2 whitespace-nowrap text-sm text-foreground dark:text-foreground",
+            "px-4 py-2 whitespace-nowrap text-sm text-foreground dark:text-foreground group-hover:hover:bg-muted group-hover:dark:bg-muted first:rounded-l-lg last:rounded-r-lg",
             {
               "text-red-500 dark:text-red-500": error,
             }
@@ -254,7 +217,7 @@ const Row = forwardRef<HTMLTableRowElement, RowProps>(
         >
           {(file.size / 1000).toFixed(0)} KB
         </td>
-        <td className="px-4 py-2 whitespace-nowrap text-sm text-foreground dark:text-foreground">
+        <td className="px-4 py-2 whitespace-nowrap text-sm text-foreground dark:text-foreground group-hover:hover:bg-muted group-hover:dark:bg-muted first:rounded-l-lg last:rounded-r-lg">
           <Progress
             className={cn("w-full h-2")}
             value={progress}
