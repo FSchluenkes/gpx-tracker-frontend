@@ -2,14 +2,13 @@
 
 import dynamic from "next/dynamic";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
-import { useSlectedTrackStore } from "@/app/stores/selected-track";
+import { Charts } from "./charts";
 
 const Map = dynamic(() => import("./map").then((mod) => mod.Map), {
   ssr: false,
 });
 
 const MapCard = () => {
-  const { selectedTrack } = useSlectedTrackStore();
   return (
     <div className="overflow-hidden h-full w-full">
       <Tabs className="flex flex-col h-full w-full" defaultValue="maps">
@@ -27,11 +26,8 @@ const MapCard = () => {
             <Map />
           </div>
         </TabsContent>
-        <TabsContent
-          value="charts"
-          className="h-full w-full bg-blue-500 rounded-lg"
-        >
-          {JSON.stringify(selectedTrack)}
+        <TabsContent value="charts" className="h-full w-full rounded-lg">
+          <Charts />
         </TabsContent>
       </Tabs>
     </div>

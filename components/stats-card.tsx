@@ -53,11 +53,11 @@ const StatsCard = () => {
             <span>Time</span>
             <div className="flex flex-row flex-wrap w-full gap-x-4">
               <span>
-                Start: {stats.time.start.toLocaleDateString()}{" "}
+                Start: {stats.time.start.toLocaleDateString("en-US")}{" "}
                 {stats.time.start.toLocaleTimeString()}
               </span>
               <span>
-                End: {stats.time.end.toLocaleDateString()}{" "}
+                End: {stats.time.end.toLocaleDateString("en-US")}{" "}
                 {stats.time.end.toLocaleTimeString()}
               </span>
             </div>

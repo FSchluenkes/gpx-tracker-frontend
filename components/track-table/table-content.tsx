@@ -24,6 +24,16 @@ const TableContent = ({
         selected={selectedTrack?.id === track.id}
       />
     ));
+  } else if (status === "success") {
+    return (
+      <tr>
+        <TableData colSpan={3}>
+          <div className="flex flex-col w-full h-full align-center justify-center text-center">
+            No data
+          </div>
+        </TableData>
+      </tr>
+    );
   } else if ((status = "pending")) {
     return (
       <tr>

@@ -11,7 +11,10 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { TableContent } from "./track-table/table-content";
 
-const TrackTable = ({ className, ...props }: React.HTMLAttributes<HTMLTableElement>) => {
+const TrackTable = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLTableElement>) => {
   const { theme } = useTheme();
   const { status, data } = useQuery({
     queryKey: ["tracks"],
@@ -46,10 +49,7 @@ const TrackTable = ({ className, ...props }: React.HTMLAttributes<HTMLTableEleme
         defer
       >
         <table
-          className={cn(
-            "outline-none min-w-full h-full bg-background dark:bg-background",
-            className
-          )}
+          className={cn("min-w-full", className)}
           ref={ref}
           {...props}
           tabIndex={-1}
