@@ -1,97 +1,180 @@
 "use client";
 
-import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { useTheme } from "next-themes";
+import { useSlectedTrackStore } from "../app/stores/selected-track";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-const StatsCard = () => {
-  const { theme } = useTheme();
-  const stats = {
-    count: 11099,
-    distance: { unit: "km", value: 288.35 },
-    elevation: {
-      gain: { unit: "m", value: 3118 },
-      loss: { unit: "m", value: 3137 },
-    },
-    speed: {
-      avg: { unit: "km/h", value: 26.93 },
-      max: { unit: "km/h", value: 404.46 },
-    },
-    time: {
-      duration: "10:42:28",
-      end: new Date("2022-08-14T17:28:06"),
-      start: new Date("2022-08-14T06:45:38"),
-    },
+interface Stats {
+  count: number;
+  distance: { unit: string; value: number };
+  elevation: {
+    gain: { unit: string; value: number };
+    loss: { unit: string; value: number };
   };
+  speed: {
+    avg: { unit: string; value: number };
+    max: { unit: string; value: number };
+  };
+  time: {
+    duration: string;
+    end: Date;
+    start: Date;
+  };
+}
+const StatsCard = () => {
+  const { selectedTrack } = useSlectedTrackStore();
 
-  return (
-    <Card className="flex flex-col w-full h-full overflow-hidden">
-      <OverlayScrollbarsComponent
-        className="w-full h-full overflow-auto flex flex-col"
-        element="div"
-        options={{
-          scrollbars: {
-            theme: theme === "light" ? "os-theme-dark" : "os-theme-light",
-            autoHide: "scroll",
-          },
-        }}
-        defer
-      >
-        <CardHeader>
-          <CardTitle>Statistics</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-2">
-          <div className="flex flex-col w-full gap-1">
-            <span>Overview</span>
-            <div className="flex flex-row flex-wrap w-full gap-x-4">
-              <span>Trackpoints: {stats.count}</span>
-              <span>Duration: {stats.time.duration}</span>
-            </div>
-          </div>
+  const { status, data: stats } = useQuery({
+    queryKey: ["stats", selectedTrack?.id],
+    queryFn: async (): Promise<Stats> => {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_STATS}`,
+        {
+          trackId: selectedTrack?.id,
+        }
+      );
 
-          <div className="flex flex-col w-full gap-1">
-            <span>Time</span>
-            <div className="flex flex-row flex-wrap w-full gap-x-4">
-              <span>
-                Start: {stats.time.start.toLocaleDateString("en-US")}{" "}
-                {stats.time.start.toLocaleTimeString()}
-              </span>
-              <span>
-                End: {stats.time.end.toLocaleDateString("en-US")}{" "}
-                {stats.time.end.toLocaleTimeString()}
-              </span>
-            </div>
-          </div>
+      const data = response.data as Stats;
 
-          <div className="flex flex-col w-full gap-1">
-            <span>Speed</span>
-            <div className="flex flex-row flex-wrap w-full gap-x-4">
-              <span>
-                avg: {stats.speed.avg.value} {stats.speed.avg.unit}
-              </span>
-              <span>
-                max: {stats.speed.max.value} {stats.speed.max.unit}
-              </span>
-            </div>
-          </div>
+      data.time.start = new Date(data.time.start);
+      data.time.end = new Date(data.time.end);
 
-          <div className="flex flex-col w-full gap-1">
-            <span>Elevation</span>
-            <div className="flex flex-row flex-wrap w-full gap-x-4">
-              <span>
-                Gain: {stats.elevation.gain.value} {stats.elevation.gain.unit}
-              </span>
-              <span>
-                Loss: {stats.elevation.loss.value} {stats.elevation.loss.unit}
-              </span>
-            </div>
+      console.log(data);
+
+      return data;
+    },
+  });
+
+
+  if (status === "success" && stats) {
+    return (
+      <div className="grid grid-rows-2 grid-cols-2 h-full w-full gap-2">
+        <CustomCard
+          title="Overview"
+          stats={[
+            { title: "Trackpoints", value: stats.count.toString() },
+            { title: "Duration", value: stats.time.duration },
+          ]}
+        />
+        <CustomCard
+          title="Speed"
+          stats={[
+            {
+              title: "Avg",
+              value: `${stats.speed.avg.value.toString()} ${
+                stats.speed.avg.unit
+              }`,
+            },
+            {
+              title: "Max",
+              value: `${stats.speed.max.value.toString()} ${
+                stats.speed.max.unit
+              }`,
+            },
+          ]}
+        />
+        <CustomCard
+          title="Altitude"
+          stats={[
+            {
+              title: "Gain",
+              value: `${stats.elevation.gain.value.toString()} ${
+                stats.elevation.gain.unit
+              }`,
+            },
+            {
+              title: "Loss",
+              value: `${stats.elevation.loss.value.toString()} ${
+                stats.elevation.loss.unit
+              }`,
+            },
+          ]}
+        />
+        <CustomCard
+          title="Time"
+          stats={[
+            {
+              title: "Start",
+              value: `${stats.time.start.toLocaleDateString("de-DE", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })} ${stats.time.start.toLocaleTimeString()}`,
+            },
+            {
+              title: "End",
+              value: `${stats.time.end.toLocaleDateString("de-DE", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })} ${stats.time.end.toLocaleTimeString()}`,
+            },
+          ]}
+        />
+      </div>
+    );
+  } else if (!selectedTrack?.id) {
+    return (
+      <Card className="flex flex-col h-full w-full text-center">
+        <CardContent className="flex flex-col w-full h-full p-0">
+          <div className="flex flex-col w-full h-full align-center justify-center text-center">
+            Please select a track
           </div>
         </CardContent>
-      </OverlayScrollbarsComponent>
-    </Card>
-  );
+      </Card>
+    );
+  } else if (status === "pending") {
+    return (
+      <Card className="flex flex-col h-full w-full text-center">
+        <CardContent className="flex flex-col w-full h-full p-0">
+          <div className="flex flex-col w-full h-full align-center justify-center text-center">
+            Loading...
+          </div>
+        </CardContent>
+      </Card>
+    );
+  } else {
+    return (
+      <Card className="flex flex-col h-full w-full text-center">
+        <CardContent className="flex flex-col w-full h-full p-0">
+          <div className="flex flex-col w-full h-full align-center justify-center text-center">
+            Error
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 };
 
 StatsCard.DisplayName = "StatsCard";
 
 export { StatsCard };
+
+interface CustomCardProps {
+  title: string;
+  stats: StatTupel[];
+}
+
+interface StatTupel {
+  title: string;
+  value: string;
+}
+const CustomCard = ({ title, stats }: CustomCardProps) => {
+  return (
+    <Card className="flex flex-col w-full h-full overflow-hidden">
+      <CardHeader className="p-4">
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-2 p-4 pt-0">
+        {stats.map((stat) => (
+          <span key={stat.title}>
+            {stat.title}: {stat.value}
+          </span>
+        ))}
+      </CardContent>
+    </Card>
+  );
+};
+
+CustomCard.DisplayName = "CustomCard";
